@@ -12,14 +12,14 @@ type Product = {
 type User = {
   id: number;
   username: string;
-  passord: string;
-  role:string;
+  password: string; // ✅ fixed typo
+  role: string;
 };
 
 export default function AdminDashboard({ username }: { username: string }) {
   // State for users
   const [users, setUsers] = useState<User[]>([]);
-const [userForm, setUserForm] = useState({ username: '', password: '', role: 'user' });
+  const [userForm, setUserForm] = useState({ username: '', password: '', role: 'user' });
 
   // State for products
   const [products, setProducts] = useState<Product[]>([]);
@@ -44,8 +44,10 @@ const [userForm, setUserForm] = useState({ username: '', password: '', role: 'us
       .catch(() => setUsers([]));
   }, []);
 
-  // Handle form input change for new user
-  const handleUserInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // ✅ Fixed to support both <input> and <select>
+  const handleUserInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     setUserForm({ ...userForm, [e.target.name]: e.target.value });
   };
 
@@ -67,7 +69,7 @@ const [userForm, setUserForm] = useState({ username: '', password: '', role: 'us
 
       const newUser = await res.json();
       setUsers([...users, newUser]);
-      setUserForm({ username: '', password: '',role:'' });
+      setUserForm({ username: '', password: '', role: 'user' });
     } catch (error) {
       console.error('Error adding user:', error);
     }
@@ -95,39 +97,40 @@ const [userForm, setUserForm] = useState({ username: '', password: '', role: 'us
           <h2 className="text-xl font-semibold mb-4">Add New User</h2>
 
           <form onSubmit={handleAddUser} className="grid grid-cols-2 gap-4 max-w-md">
-  <input
-    type="text"
-    name="username"
-    placeholder="Username"
-    value={userForm.username}
-    onChange={handleUserInputChange}
-    required
-  />
-  <input
-    type="password"
-    name="password"
-    placeholder="Password"
-    value={userForm.password}
-    onChange={handleUserInputChange}
-    required
-  />
-  <select
-    name="role"
-    value={userForm.role}
-    onChange={handleUserInputChange}
-    className="border p-2 rounded"
-    required
-  >
-    <option value="user">User</option>
-    <option value="admin">Admin</option>
-    <option value="sales">Sales</option>
-    <option value="developer">Developer</option>
-    <option value="finance">Finance</option>
-    <option value="investor">Investor</option>
-  </select>
-  <button type="submit">Add User</button>
-</form>
-
+            <input
+              type="text"
+              name="username"
+              placeholder="Username"
+              value={userForm.username}
+              onChange={handleUserInputChange}
+              required
+            />
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              value={userForm.password}
+              onChange={handleUserInputChange}
+              required
+            />
+            <select
+              name="role"
+              value={userForm.role}
+              onChange={handleUserInputChange}
+              className="border p-2 rounded"
+              required
+            >
+              <option value="user">User</option>
+              <option value="admin">Admin</option>
+              <option value="sales">Sales</option>
+              <option value="developer">Developer</option>
+              <option value="finance">Finance</option>
+              <option value="investor">Investor</option>
+            </select>
+            <button type="submit" className="bg-red-700 text-white py-2 px-4 rounded">
+              Add User
+            </button>
+          </form>
         </section>
 
         {/* Products List */}
